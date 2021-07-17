@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script type="text/javascript" src="scripts/jquery.js"></script>
+    <script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="scripts/sticky-notes.js" type="text/javascript"></script>
+    <script type="text/javascript" src="scripts/main.js" type="text/javascript"></script>
+    
+    <link  rel="stylesheet" type="text/css" href="css/sticky-notes.css"/>
+    <link  rel="stylesheet" type="text/css" href="css/button.css"/>
+
+</head>
+<body>
+    <table>
+        <tr>
+            <td>名前: </td>
+            <td><input type="text" style="width:100%" id="userName" value=""></td>
+        </tr>
+        <tr>
+            <td>メッセージ: </td>
+            <td><textarea style="width:100%"  id="message"></textarea></td>
+        </tr>
+        <tr>
+            <td>色を選択: </td>
+            <td><input type="color" id="color" name="color" value="#efcc4c"></td>
+        </tr>
+    </table>
+    <input type="button" id="buttonAdd" value="付箋作成">
+    <br>
+    <br>
+    <input type="button" id="button" value="音声認識開始">
+    <br>
+    <div id="result">
+
+    </div>
+    <div id="tag-erea">
+
+    </div>
+    <br>
+
+</body>
+</html>

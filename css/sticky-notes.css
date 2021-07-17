@@ -1,0 +1,113 @@
+.stickey-notes-normal {
+    position: absolute;
+    opacity: 0.8;
+    width: 250px;
+    padding: 10px;
+    margin: 10px;
+    color: #000;
+    background: #efcc4c;
+}
+.stickey-notes-close{
+    cursor: pointer;
+    float: right;
+    font-size: 14px;
+    line-height: 18px;
+    color: #FFF;
+}
+
+.stickey-notes-title {
+    font-size: 18px;
+    line-height: 24px; 
+}
+
+.stickey-notes-message {
+    border:none;
+    background:transparent;
+    width:100%;
+    font-size: 14px;
+    line-height: 18px; 
+}
+
+.accordion-container {
+    position: relative;
+    width: 100%;
+    border: 1px solid #0079c1;
+    border-top: none;
+    outline: 0;
+    cursor: pointer
+}
+
+  /* .accordion-container .accordion-title {
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0.625em 0.625em 0.625em 2em;
+    font-size: 1.25em;
+    font-weight: normal;
+    color: #fff;
+    background: #000;
+    cursor: pointer;
+  } */
+
+
+.accordion-title::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    right: 25px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-top-color: #fff;
+}
+
+.accordion-title.open::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    border: 8px solid transparent;
+    border-bottom-color: #fff;
+}
+
+.accordion-title{
+    position: relative;
+    cursor: pointer;
+}
+/*   
+  .accordion-title:after {
+    content: "";
+    position: absolute;
+    right: 30px;
+    transition: all 0.2s ease-in-out;
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-top: solid 2px #fff;
+    border-right: solid 2px #fff;
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+  }
+  
+  .accordion-title.open:after {
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    top: 50%; 
+  } 
+*/
+  
+.accordion-content {
+    display: none;
+    padding-left: 2.3125em;
+}
+
+  /* CSS for CodePen */
+.accordion-container {
+    width: 300px;
+    margin: 1.875em auto;
+}
+
+.color {
+    cursor: pointer;
+    /* display: block;
+    float:left; */
+}
