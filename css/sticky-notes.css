@@ -22,10 +22,12 @@
 
 .stickey-notes-message {
     border:none;
-    background:transparent;
+    /* background:transparent; */
+    background:white;
     width:100%;
     font-size: 14px;
     line-height: 18px; 
+    padding:5px 5px 0px 5px;
 }
 
 .accordion-container {

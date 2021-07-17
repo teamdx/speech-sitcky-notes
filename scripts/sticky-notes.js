@@ -46,7 +46,8 @@ $.stickey_notes = function () {
         //付箋のドラッグ許可
         $('.draggable').draggable({
             opacity: 0.5,
-            zIndex: 999,
+//            zIndex: 100,
+            stack: '.draggable'
         });
 
         // イベント名を使用
@@ -68,6 +69,8 @@ $.stickey_notes = function () {
     changeMessage = (msg) => {
 
     }
+
+    //付箋の色を変更
     changeStickeyNotesColor = (color, tag) => {
         console.log("color change:" + color + "," + tag);
         $("#" + tag + ".stickey-notes-normal").css("background", color);
