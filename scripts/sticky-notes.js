@@ -26,7 +26,7 @@ $.stickey_notes = function () {
     //                + '<div class="stickey-notes-title">'+ param.name +'</div>'
                     + '<div class="stickey-notes-message" contenteditable="true">'+param.message+"<br>"
                         +'<table><tr>'
-                        + '<td><input type="color" class="color" id="color" value="#efcc4c" onchange="changeStickeyNotesColor(this.value,\''+param.id + '\')"></td>'
+                        + '<td><input type="color" class="color" id="color" value="#efcc4c" list="colorList" onchange="changeStickeyNotesColor(this.value,\''+param.id + '\')"></td>'
                         + '<td><a class="btn_good" value="0" onclick="clickGoodBad(1,\''+param.id + '\')"><img class="goodBad" src="./images/good.png"/></a></td>'
                         + '<td><a class="btn_bad" value="0" onclick="clickGoodBad(2,\''+param.id + '\')"><img class="goodBad" src="./images/bad.png"/></a></td>'
                         +'</tr></table>'
