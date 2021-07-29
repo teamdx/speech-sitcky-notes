@@ -1,7 +1,15 @@
-let buttonAdd;
+/**
+ * 画面制御処理
+ * ・NodeRedへ付箋情報を送信
+ * ・NodeRedから付箋情報を取得し、付箋を作成
+ * ・
+ */
+
+
+let buttonAdd; //付箋作成ボタン
 
 /**
- * Socketメッセージ送信
+ * Socketメッセージ送信(NodeRedへ送信)
  */
 function sendMessage(param) {
     switch(param.mode) {
@@ -10,21 +18,23 @@ function sendMessage(param) {
             var key = getUniqueStr();
             param.id = key;
             //UserName
-            param.name = $("#userName").val();
+            // param.name = $("#userName").val();
             //color
             param.color = $("#color").val();
             break;
     }
-    // console.log("sendMessage:" + JSON.stringify(param));
-    webSocket.send(JSON.stringify(param));
+
+    //NodeRedを使って付箋作成
+    //webSocket.send(JSON.stringify(param));
+
+    //NodeRedを使わずに付箋作成
+    receiveMessage(param);
 }
 
 /**
- * Socketメッセージ受信
+ * Socketメッセージ受信(NodeRedから受信)
  */
 function receiveMessage(msg) {
-    // console.log("receive:" + msg.mode);
-    // console.log(msg);
 
     switch (msg.mode) {
         case "create":
@@ -48,38 +58,33 @@ function receiveMessage(msg) {
 
 }            
 
-/**
- * 音声認識されたメッセージ
- */
-function addMessage(msg) {
-    const p = document.createElement("p"); 
-    const text = document.createTextNode(msg); 
-    p.appendChild(text); 
-    result.appendChild(p); 
-}
 
 /**
  * 処理開始時
  */
  window.addEventListener("DOMContentLoaded", () => { 
 
+    //付箋作成ボタン
+    buttonAdd = document.getElementById("buttonAdd");
+
     //WebSocket
-    Promise.all( [openWebSocket()])
+    Promise.all([openWebSocket()])
     .then(() => {
-        buttonAdd = document.getElementById("buttonAdd");
+        
+        //付箋作成ボタンが押されたとき
         buttonAdd.addEventListener("click", () => { 
-            //テスト
+            //Socketメッセージ送信
             sendMessage({mode:'create', message:$("#message").val()});
+
         });
     
         //名前の入力
-        var userName = "guest";//window.prompt("ユーザー名を入力してください", "");
-        $("#userName").val(userName);
-    
-        $("#message").val("入社後私は、部活動で部長であった経験を活かし、御社に貢献していきたいと考えています。");
-        sendMessage({mode:'create', message:$("#message").val()});
-    
-    })
+        // var userName = "guest";;
+        // $("#userName").val(userName);
 
+        //デバッグとして付箋内容を設定
+        $("#message").val("入社後私は、部活動で部長であった経験を活かし、御社に貢献していきたいと考えています。");
+
+    })
 
 });

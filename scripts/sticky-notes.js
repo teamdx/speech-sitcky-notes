@@ -10,16 +10,13 @@ var webSocket = null;
  */
 $.stickey_notes = function () {
 
-    var stickey_notes =  (arguments) => {
+    let stickey_notes =  (arguments) => {
 
         //パラメータを取得
-        var param = arguments[0];
-
-        console.log("create stickey_notes:");
-        console.log(param);
+        let param = arguments[0];
 
         //付箋のレイアウト
-        var elem = $(
+        let elem = $(
                 '<div class="draggable stickey-notes-normal " id="'+ param.id +'" >'
                     + '<div class="accordion-title" onclick="setAccordion(\''+param.id + '\')"></div>'
                     + '<div class="stickey-notes-close" onclick="removeStickeyNotes(\''+param.id + '\')">×</div><br>'
@@ -50,25 +47,16 @@ $.stickey_notes = function () {
             stack: '.draggable'
         });
 
-        // イベント名を使用
-        $(".draggable").on("drag", function(event, ui) {
-
-        });
-
-        //付箋をドロップした時
+        //付箋のドラッグをドロップした時
         $(".draggable").on("dragstop", function(event, ui) {
             console.log("drag end:" + this.id + " " + this.style.left + "," + this.style.top); 
-            var param = {mode:"move", id:this.id, left:this.style.left, top:this.style.top};
+            let param = {mode:"move", id:this.id, left:this.style.left, top:this.style.top};
+            //Socketメッセージ送信(main.js)
             sendMessage(param);
         });
 
     }
     stickey_notes(arguments);
-
-    //メッセージ変更イベント
-    changeMessage = (msg) => {
-
-    }
 
     //付箋の色を変更
     changeStickeyNotesColor = (color, tag) => {
@@ -76,11 +64,10 @@ $.stickey_notes = function () {
         $("#" + tag + ".stickey-notes-normal").css("background", color);
     }
 
-    //削除イベント
+    //付箋の削除処理
     removeStickeyNotes = (tag) => {
-//        $(tag).parent().remove();
+        //Socketメッセージ送信(main.js)
         sendMessage({mode:"delete", id:tag})
-
         console.log("remove");
     }
 
@@ -113,7 +100,7 @@ $.stickey_notes = function () {
         //現在の値を取得
         let val = goodBad.attr("value");
 
-        //0の場合は、クラスを設定
+        //値が0の場合は、cssクラスを設定
         if (val == "0") {
             goodBad.addClass(className);
         }
@@ -135,70 +122,70 @@ $.stickey_notes = function () {
  * 音声認識の設定
  */
 window.addEventListener("DOMContentLoaded", () => { 
-    const button = document.getElementById("button"); 
-    const result = document.getElementById("result"); 
+    let recognition;       //音声認識用
+    let voiceText = "";    //音声認識結果の文字列
+    let listening = false; //true:音声認識中
+    let button = document.getElementById("btnRecStart"); //音声認識ボタン
+    let result = document.getElementById("message");     //音声認識結果表示
 
-    var voiceText = "";
 
+    //音声認識が使用できない場合
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition 
     if (typeof SpeechRecognition === "undefined") { 
-        // button.remove(); 
-        // const message = document.getElementById("message"); 
-        // message.removeAttribute("hidden"); 
-        // message.setAttribute("aria-hidden", "false"); 
         alert("音声認識非対応です");
+ 
     } else { 
-        // good stuff to come here 
-        let listening = false; 
-        const recognition = new SpeechRecognition(); 
-        // const start = () => {}; 
-        // const stop  = () => {}; 
-        // const onResult = event => {}; 
+        //音声認識の設定
+        recognition = new SpeechRecognition(); 
+        recognition.lang = 'ja-JP'; 
+        recognition.continuous = true; 
+        recognition.interimResults = true; 
 
-        const onResult = event => { 
-            result.innerHTML = ""; 
-            console.log(event.results);
+        //音声認識の処理
+        recognition.addEventListener("result", event => { 
 
+            //音声認識された結果を取得
             res = event.results[event.results.length-1];
 
-            const text = document.createTextNode(res[0].transcript); 
-            const p = document.createElement("p"); 
-            if (res.isFinal) { 
-                p.classList.add("final"); 
-                voiceText = res[0].transcript;//確定した
-                sendMessage({mode:"create", message:voiceText});
-                // recognition.stop();
-                // recognition.start(); 
-            } 
-            p.appendChild(text); 
-            result.appendChild(p); 
-        };
+            //音声認識された文章
+            voiceText = res[0].transcript;
 
+            //音声認識結果を画面に表示
+            result.value =  voiceText; 
+
+            //音声認識した文章が終了した場合
+            if (res.isFinal) {                 
+                //Socketメッセージ送信(main.js)
+                sendMessage({mode:"create", message:voiceText});
+            } 
+
+        });
+
+        //音声認識の開始
         const start = () => { 
             recognition.start(); 
         };
 
+        //音声認識の停止
         const stop = () => { 
             recognition.stop(); 
         };
 
-        recognition.continuous = true; 
-        recognition.interimResults = true; 
-        recognition.addEventListener("result", onResult); 
-
+        //音声認識ボタンが押された時の処理
         button.addEventListener("click", () => { 
+            //listeningがtrueの時は、stop()関数を呼び出す
+            //listeningがfalseの時は、start()関数を呼び出す
             listening ? stop() : start(); 
+            //listeningの値を反転(true⇔false)
             listening = !listening; 
-            console.log("click");
         });             
 
-
+        //音声認識が開始した時
         recognition.onstart = () => {
-    //                    addMessage("音声認識開始");
         }
 
         recognition.onend = () => {
-    //                    addMessage("音声認識終了");
+            //音声認識を再スタート
             recognition.start(); 
         }
     } 
@@ -206,33 +193,41 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 /**
- * WebSocket処理
+ * WebSocket処理（NodeRed）
  */
  function openWebSocket() {
 
     return new Promise((resolve,reject) => {
+
+        //NodeRedへ未接続の場合
         if (webSocket == null) {
-            // 初期化
+
+            // NodeRedへ接続
             webSocket = new WebSocket(uri);
-            // イベントハンドラ
+
+            // NodeRedへ接続できた場合
             webSocket.onopen = (ev) => {
                 console.log("Connect..");
                 resolve();
             };
-        
+            
+            // NodeRedからメッセージを受け取った場合
             webSocket.onmessage = (ev) => {
                 if (ev && ev.data) {
                     var receive = JSON.parse(ev.data); 
                     console.log(receive);
+                    //受信処理
                     receiveMessage(receive);
                 }
             };
 
+            // NodeRedとの接続を閉じた場合
             webSocket.onclose = (ev) => {
                 console.log("disconnect(" + ev.code + ")");
                 webSocket = null;
             };
 
+            // NodeRedとの接続でエラーが発生した場合
             webSocket.onerror = (ev) => {
                 console.log("Error " + ev);
                 resolve();

@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Speech-Sticky-Notes</title>
 
     <script type="text/javascript" src="scripts/jquery.js"></script>
     <script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
     <script type="text/javascript" src="scripts/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="scripts/materialize.min.js"></script>
     <script type="text/javascript" src="scripts/sticky-notes.js" type="text/javascript"></script>
     <script type="text/javascript" src="scripts/main.js" type="text/javascript"></script>
-    <script type="text/javascript" src="scripts/materialize.min.js"></script>
     
     <link rel="stylesheet" type="text/css" href="css/materialize.min.css">
     <link rel="stylesheet" type="text/css" href="css/sticky-notes.css"/>
@@ -19,34 +19,41 @@
 
 </head>
 <body>
-    <input type="text" style="width:100%" id="userName" value=""></td>
-    <textarea style="width:100%"  id="message"></textarea></td>
-    <input type="color" id="color" name="color" list="colorList" value="#efcc4c">
-    <datalist id="colorList">
-        <option>#efcc4c</option>
-        <option>#E63D46</option>
-        <option>#FF7E00</option>
-        <option>#00A36F</option>
-        <option>#4363C1</option>
-        <option>#FF0078</option>
-        <option>#C09D4B</option>
-        <option>#2CBF13</option>
-        <option>#2C6DFF</option>
-        <option>#FFFFFF</option>
-        <option>#FF699E</option>
-        <option>#89612D</option>
-        <option>#0B755E</option>
-        <option>#17AEDF</option>
-        <option>#000000</option>
-    </datalist>
-    <input type="button" id="buttonAdd" value="付箋作成">
-    <input type="button" id="button" value="音声認識開始">
-    <br>
-    <div id="result">
-
+    <!--デバッグ用の領域-->
+    <div class="row">
+        <div class="box col s12">
+            <!--名前-->
+            <!-- <input type="text" style="width:100%" id="userName" value=""></td> -->
+            <!--付箋の色選択-->
+            <input type="color" id="color" name="color" list="colorList" value="#efcc4c">
+            <!--付箋の色のリスト-->
+            <datalist id="colorList">
+                <option>#efcc4c</option>
+                <option>#E63D46</option>
+                <option>#FF7E00</option>
+                <option>#00A36F</option>
+                <option>#4363C1</option>
+                <option>#FF0078</option>
+                <option>#C09D4B</option>
+                <option>#2CBF13</option>
+                <option>#2C6DFF</option>
+                <option>#FFFFFF</option>
+                <option>#FF699E</option>
+                <option>#89612D</option>
+                <option>#0B755E</option>
+                <option>#17AEDF</option>
+                <option>#000000</option>
+            </datalist>
+            <!--付箋作成ボタン-->
+            <input type="button" id="buttonAdd" value="付箋作成">
+            <!--音声認識開始ボタン-->
+            <input type="button" id="btnRecStart" value="音声認識開始">
+            <!--音声認識結果-->
+            <textarea style="width:100%" id="message"></textarea></td>
+        </div>
     </div>
 
-    <br>
+    <!--カテゴリ領域-->
     <div id="category" class="row">
         <div class="box col s12 m4 l4 ">
             <div id="tag-erea"class="card large">付箋</div>
@@ -73,7 +80,5 @@
             <div class="card large">Bad</div>
         </div>
     </div>
-    <br>
-
 </body>
 </html>
