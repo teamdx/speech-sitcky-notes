@@ -5,6 +5,11 @@ const uri = "wss://voice-develop.mybluemix.net/wsvoice";
 // WebSocketオブジェクト
 var webSocket = null;
 
+//履歴の頭番号【泉野】
+var historyNum = 1;
+//ログ出力で使用する発言のログ
+var commentLog="";
+
 /**
  * 付箋の作成
  */
@@ -17,11 +22,12 @@ $.stickey_notes = function () {
 
         //付箋のレイアウト
         let elem = $(
-                '<div class="draggable stickey-notes-normal " id="'+ param.id +'" >'
-                    + '<div class="accordion-title" onclick="setAccordion(\''+param.id + '\')"></div>'
-                    + '<div class="stickey-notes-close" onclick="removeStickeyNotes(\''+param.id + '\')">×</div><br>'
-    //                + '<div class="stickey-notes-title">'+ param.name +'</div>'
-                    + '<div class="stickey-notes-message" contenteditable="true">'+param.message+"<br>"
+            '<div class="draggable stickey-notes-normal " id="' + param.id + '" >'
+            + '<div class="category-name">none</div>'
+            + '<div class="accordion-title" onclick="setAccordion(\'' + param.id + '\')"></div>'
+            + '<div class="stickey-notes-close" onclick="removeStickeyNotes(\'' + param.id + '\')">×</div><br>'
+            //                + '<div class="stickey-notes-title">'+ param.name +'</div>'
+            + '<div class="stickey-notes-message" contenteditable="true">' + param.message +"<br>"
                         +'<table><tr>'
                         + '<td><input type="color" class="color" id="color" value="#efcc4c" list="colorList" onchange="changeStickeyNotesColor(this.value,\''+param.id + '\')"></td>'
                         + '<td><a class="btn_good" value="0" onclick="clickGoodBad(1,\''+param.id + '\')"><img class="goodBad" src="./images/good.png"/></a></td>'
@@ -41,19 +47,43 @@ $.stickey_notes = function () {
         });
 
         //付箋のドラッグ許可
+        var dragFusen = null;//Drag中の付箋
         $('.draggable').draggable({
             opacity: 0.5,
-//            zIndex: 100,
-            stack: '.draggable'
+            stack: '.draggable',
+            snap: '.draggable-snap',
+            snapMode: 'inner',
+            start: function(event, ui) {
+                //Drag中の付箋を格納
+                dragFusen = $(this).attr('id');
+            },
         });
 
         //付箋のドラッグをドロップした時
         $(".draggable").on("dragstop", function(event, ui) {
-            console.log("drag end:" + this.id + " " + this.style.left + "," + this.style.top); 
+
+            //console.log("drag end:" + this.id + " " + this.style.left + "," + this.style.top); 
             let param = {mode:"move", id:this.id, left:this.style.left, top:this.style.top};
             //Socketメッセージ送信(main.js)
             sendMessage(param);
         });
+
+        //ドロップ先の判定
+        $(".draggable-snap").droppable({
+            drop: function( event, ui ) {
+                //ドロップ先
+                //let dropId = $(this).attr('id');
+
+                //ドロップ先のカテゴリ名
+                let categoryName = $(this).text();
+                
+                //付箋にカテゴリ名をセット
+                $("#" + dragFusen + " > .category-name").text(categoryName);
+                console.log(dragFusen + ":" + categoryName);
+
+            }
+        });
+
 
     }
     stickey_notes(arguments);
@@ -127,7 +157,8 @@ window.addEventListener("DOMContentLoaded", () => {
     let listening = false; //true:音声認識中
     let button = document.getElementById("btnRecStart"); //音声認識ボタン
     let result = document.getElementById("message");     //音声認識結果表示
-
+    const lists = document.getElementById('lists');
+    const li = document.createElement('a');
 
     //音声認識が使用できない場合
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition 
@@ -154,9 +185,20 @@ window.addEventListener("DOMContentLoaded", () => {
             result.value =  voiceText; 
 
             //音声認識した文章が終了した場合
-            if (res.isFinal) {                 
-                //Socketメッセージ送信(main.js)
-                sendMessage({mode:"create", message:voiceText});
+            if (res.isFinal) {
+
+
+                //add 2021/8/23 saito >>
+                //付箋作成用のjavascript呼び出しを文字列で生成
+                let createFusenHtml = "<a href=\"javascript:createFusen('" + voiceText + "');\" >" + historyNum + ":  " + voiceText + "</a><br />";
+                //リストに追加
+                lists.insertAdjacentHTML('afterbegin', createFusenHtml);
+                //<< add 2021/8/23 saito 
+
+                 commentLog = commentLog + historyNum + ":  " + voiceText + "\n";
+
+                // //履歴の頭番号を+1する【泉野】
+                 historyNum++;
             } 
 
         });
@@ -257,3 +299,4 @@ function getUniqueStr(myStrong){
     if (myStrong) strong = myStrong;
     return new Date().getTime().toString(16)  + Math.floor(strong*Math.random()).toString(16)
 }
+

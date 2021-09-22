@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -17,11 +17,25 @@
     <link rel="stylesheet" type="text/css" href="css/sticky-notes.css"/>
     <link rel="stylesheet" type="text/css" href="css/button.css"/>
 
+    <!--泉野-->
+    <style type="text/css">
+        div.example {
+            overflow-y:auto;
+        }
+    </style>
+    <script language="javascript" type="text/javascript"></script>
+
 </head>
+
 <body>
+
+    <img src="./images/fusenB15.png" alt="付箋アプリロゴ" title="付箋アプリロゴ" />
+
     <!--デバッグ用の領域-->
     <div class="row">
         <div class="box col s12">
+            非面接者氏名
+            <textarea style="width: 10%;height: 25px;" id="interviewerName">ボビー君</textarea>
             <!--名前-->
             <!-- <input type="text" style="width:100%" id="userName" value=""></td> -->
             <!--付箋の色選択-->
@@ -45,39 +59,65 @@
                 <option>#000000</option>
             </datalist>
             <!--付箋作成ボタン-->
-            <input type="button" id="buttonAdd" value="付箋作成">
+            <!--<input type="button" id="buttonAdd" value="付箋作成">-->
             <!--音声認識開始ボタン-->
             <input type="button" id="btnRecStart" value="音声認識開始">
+            <!--ログ出力-->
+            <input type="button" value="ログ出力" class="printing" onclick="createTextFile();" />
+            <!--付箋内容出力ボタン-->
+            <input type="button" value="付箋内容出力" class="printing" onclick="createFusenFile();" />
+            <!--印刷ボタン-->
+            <input type="button" value="印刷する" class="printing" onclick="window.print();" />
+
             <!--音声認識結果-->
-            <textarea style="width:100%" id="message"></textarea></td>
+            <textarea style="width: 100%" id="message"></textarea></td>
+
+            <!-- ファイル出力用のリンク -->
+            <a id="logFile" href="" download="logFile.txt" style=""></a>
+            <a id="funsenFile" href="" download="fusenFile.txt" style=""></a>
+
         </div>
     </div>
+
+    <!--発言履歴-->
+    <div style="width: 100%; height: 100px; border: 1px #c0c0c0 solid" class="example" id="history2">
+        <ul id="lists">
+            <!--<a href="javascript:createFusen('その要因はリリース後まで見通し線密な計画を立てたことにあると考えています');">3:その要因はリリース後まで見通し線密な計画を立てたことにあると考えています</a>
+            <br />
+            <a href="javascript:createFusen('前の会社ではWEBサイトの設計とデザインを担当し1年間で受注案件数110%を達成しました');">2:前の会社ではWEBサイトの設計とデザインを担当し1年間で受注案件数110%を達成しました</a>
+            <br />
+            <a href="javascript:createFusen('はい');">1:はい</a>
+            <br />-->
+
+        </ul>
+    </div>
+
 
     <!--カテゴリ領域-->
     <div id="category" class="row">
         <div class="box col s12 m4 l4 ">
-            <div id="tag-erea"class="card large">付箋</div>
+            <div id="tag-erea" class="card large">付箋</div>
         </div>
         <div class="box col s12 m4 l4 ">
-            <div class="card large">志望動機</div>
+            <div id="tag-erea2" class="draggable-snap card large">志望動機</div>
         </div>
         <div class="box col s12 m4 l4 ">
-            <div class="card large">取り組んだこと</div>
+            <div id="tag-erea3" class="draggable-snap card large">自己PR</div>
         </div>
         <div class="box col s12 m4 l4 ">
-            <div class="card large">努力したこと</div>
+            <div id="tag-erea4" class="draggable-snap card large">前職の離職理由</div>
         </div>
         <div class="box col s12 m4 l4 ">
-            <div class="card large">強み</div>
+            <div id="tag-erea5" class="draggable-snap card large">強み</div>
         </div>
         <div class="box col s12 m4 l4 ">
-            <div class="card large">弱み</div>
+            <div id="tag-erea6" class="draggable-snap card large">自由質問</div>
         </div>
         <div class="box col s12 m4 l4 ">
-            <div class="card large">Good/深堀したい</div>
+            <div id="tag-erea7" class="draggable-snap card large">Good/深堀したい</div>
         </div>
         <div class="box col s12 m4 l4 ">
-            <div class="card large">Bad</div>
+            <div id="tag-erea8" class="draggable-snap card large">Bad</div>
         </div>
     </div>
 </body>

@@ -64,27 +64,94 @@ function receiveMessage(msg) {
  */
  window.addEventListener("DOMContentLoaded", () => { 
 
-    //付箋作成ボタン
-    buttonAdd = document.getElementById("buttonAdd");
+    // //付箋作成ボタン
+    // buttonAdd = document.getElementById("buttonAdd");
 
-    //WebSocket
-    Promise.all([openWebSocket()])
-    .then(() => {
-        
-        //付箋作成ボタンが押されたとき
-        buttonAdd.addEventListener("click", () => { 
-            //Socketメッセージ送信
-            sendMessage({mode:'create', message:$("#message").val()});
+    // //WebSocket
+    // Promise.all([openWebSocket()])
+    // .then(() => {
 
-        });
+    //     //【泉野】
+    //     var textlist = document.getElementsByTagName('a');
+    //  /*   alert(textlist[0].textContent);*/
+
+    //     //付箋作成ボタンが押されたとき
+    //     buttonAdd.addEventListener("click", () => { 
+    //         //Socketメッセージ送信
+    //         sendMessage({mode:'create', message:$("#message").val()});
+    //     });
     
-        //名前の入力
-        // var userName = "guest";;
-        // $("#userName").val(userName);
+    //     //名前の入力
+    //     // var userName = "guest";;
+    //     // $("#userName").val(userName);
 
-        //デバッグとして付箋内容を設定
-        $("#message").val("入社後私は、部活動で部長であった経験を活かし、御社に貢献していきたいと考えています。");
+    //     //デバッグとして付箋内容を設定
+    //     //$("#message").val("入社後私は。部活動で部長であった経験を活かし、御社に貢献していきたいと考えています。");
 
-    })
+    // })
 
 });
+
+function OnLinkClick() {
+    var textlist = document.getElementsByTagName('a');
+    var target =textlist[0].textContent;
+
+   /* target = document.getElementById("lists");*/
+    sendMessage({ mode: 'create', message: $("#textlist").val() });
+    return false;
+}
+
+//add 2021/8/23 saito >>
+//渡された文字列で付箋を作成
+function createFusen(msg) {
+    sendMessage({ mode: 'create', message: msg });
+}
+//<< add 2021/8/23 saito
+
+/*text形式でログを出力*/
+function createTextFile() {
+    var text = "【非面接者氏名】" + document.getElementById("interviewerName").value + "\r\n【発言内容】\r" + commentLog;
+
+    //ファイル出力処理
+    var blob = new Blob([text], { "type": "text/plain" });
+    var downloadLink = document.getElementById("logFile");
+
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.click();
+}
+
+//付箋の内容をテキスト出力
+function createFusenFile() {
+
+    var text = "";
+    //付箋を列挙
+    $('.stickey-notes-normal').each(function(index, elem){
+        let id = $(elem).attr('id');
+
+        //カテゴリ名
+        let categoryName = $("#" + id + " > .category-name").text();
+
+        //内容
+        let message = $("#" + id + " > .stickey-notes-message").text();
+
+        //評価
+        let goodBad = "";
+        if ($("#" + id + " > div.stickey-notes-message > table > tbody > tr > td > .btn_good").attr("value") == 1) {
+            goodBad = "Good";
+        }
+        else if ($("#" + id + " > div.stickey-notes-message > table > tbody > tr > td > .btn_good").attr("value") == 1) {
+            goodBad = "Bad";
+        }
+
+        //出力内容
+        text += categoryName + "," + message + "," + goodBad + "\r\n" ;
+
+    });
+
+    //ファイル出力処理
+    var blob = new Blob([text], { "type": "text/plain" });
+    var downloadLink = document.getElementById("funsenFile");
+
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.click();
+}

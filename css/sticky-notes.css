@@ -51,6 +51,11 @@
     cursor: pointer;
   } */
 
+.category-name {
+  position: absolute;
+  text-align: left;
+  cursor:default;
+}
 
 .accordion-title::after {
     content: "";
@@ -112,4 +117,10 @@
     cursor: pointer;
     /* display: block;
     float:left; */
+}
+
+.printing {
+    /*   display:block;
+   margin: 0 0 0 auto;*/
+    float: right;
 }
